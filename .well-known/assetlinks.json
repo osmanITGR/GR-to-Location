@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.dev.tahsin.grconverter",
+    "sha256_cert_fingerprints": [
+      "C4:65:44:2C:91:47:17:00:28:3B:01:24:E1:9F:83:52:0C:57:23:2C:DA:66:05:B8:DB:51:77:63:DC:78:7E:2E"
+    ]
+  }
+}]

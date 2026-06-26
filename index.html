@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GR Converter — Shared Locations</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #141F0A;
+    color: #E8F5E9;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: #263D17;
+    border: 2px solid #8BC34A;
+    border-radius: 16px;
+    padding: 28px 24px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+  .icon { font-size: 48px; margin-bottom: 12px; }
+  h1 { color: #8BC34A; font-size: 22px; margin-bottom: 6px; }
+  .subtitle { color: #A5D6A7; font-size: 13px; margin-bottom: 24px; }
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-bottom: 12px;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #8BC34A, #6EA832);
+    color: #141F0A;
+  }
+  .btn-secondary {
+    background: #1E3A0F;
+    color: #8BC34A;
+    border: 1px solid #4A7C2A;
+  }
+  .loc-list {
+    text-align: left;
+    margin: 16px 0;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  .loc-item {
+    background: #1A2E10;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid #8BC34A;
+  }
+  .loc-name { font-weight: bold; font-size: 14px; color: #E8F5E9; }
+  .loc-detail { font-size: 12px; color: #A5D6A7; margin-top: 2px; }
+  .maps-link { color: #8BC34A; font-size: 11px; }
+  .footer { color: #3D5C28; font-size: 11px; margin-top: 20px; }
+  #status { color: #A5D6A7; font-size: 13px; margin: 12px 0; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">📍</div>
+  <h1>GR Converter</h1>
+  <p class="subtitle">Shared Locations</p>
+
+  <div id="locList" class="loc-list"></div>
+  <p id="status">Loading...</p>
+
+  <a id="btnApp" class="btn btn-primary" style="display:none">
+    ⬆ Open in GR Converter App
+  </a>
+
+  <a id="btnMaps" class="btn btn-secondary" style="display:none" target="_blank">
+    🌍 View All on Google Maps
+  </a>
+
+  <p class="footer">Developed by OsmanIT</p>
+</div>
+
+<script>
+// Parse ?data= from URL
+const params = new URLSearchParams(window.location.search);
+const raw = params.get('data');
+const status = document.getElementById('status');
+const locList = document.getElementById('locList');
+const btnApp  = document.getElementById('btnApp');
+const btnMaps = document.getElementById('btnMaps');
+
+if (!raw) {
+  status.textContent = 'No location data found.';
+} else {
+  let locs;
+  try { locs = JSON.parse(decodeURIComponent(raw)); } catch(e) { locs = null; }
+
+  if (!locs || !locs.length) {
+    status.textContent = 'Could not read location data.';
+  } else {
+    status.textContent = locs.length + ' location' + (locs.length > 1 ? 's' : '') + ' shared';
+
+    // Build list
+    locs.forEach((l, i) => {
+      const div = document.createElement('div');
+      div.className = 'loc-item';
+      const mapsUrl = 'https://maps.google.com/?q=' + l.la + ',' + l.lo;
+      div.innerHTML =
+        '<div class="loc-name">' + (i+1) + '. ' + escHtml(l.n) + '</div>' +
+        '<div class="loc-detail">' +
+          (l.gr ? 'GR: ' + escHtml(l.gr) : '') +
+          (l.sh ? '  |  Sheet: ' + escHtml(l.sh) : '') +
+        '</div>' +
+        '<div class="loc-detail">📌 ' + l.la.toFixed(5) + ', ' + l.lo.toFixed(5) + '</div>' +
+        '<a class="maps-link" href="' + mapsUrl + '" target="_blank">🌍 Open this on Google Maps</a>';
+      locList.appendChild(div);
+    });
+
+    // Deep link back into app
+    const appLink = 'grconverter://locations?data=' + encodeURIComponent(JSON.stringify(locs));
+    btnApp.href = appLink;
+    btnApp.style.display = 'block';
+
+    // Google Maps with all points (first location as center)
+    const mapsAll = locs.length === 1
+      ? 'https://maps.google.com/?q=' + locs[0].la + ',' + locs[0].lo
+      : 'https://maps.google.com/maps?q=' + locs.map(l => l.la+','+l.lo).join('|');
+    btnMaps.href = mapsAll;
+    btnMaps.style.display = 'block';
+
+    // Auto-redirect to app on Android
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    if (isAndroid) {
+      status.textContent += ' — Opening app...';
+      window.location.href = appLink;
+      // If app not installed, page stays visible after 1.5s
+      setTimeout(() => { status.textContent = locs.length + ' location' + (locs.length > 1 ? 's' : '') + ' received'; }, 1500);
+    }
+  }
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
