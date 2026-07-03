@@ -2,9 +2,9 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "com.dev.tahsin.grconverter",
+    "package_name": "com.osmanit.grtogps",
     "sha256_cert_fingerprints": [
-      "C4:65:44:2C:91:47:17:00:28:3B:01:24:E1:9F:83:52:0C:57:23:2C:DA:66:05:B8:DB:51:77:63:DC:78:7E:2E"
+      "6C:92:0D:A1:E4:F4:7D:11:B7:6D:23:93:49:AC:F5:56:97:3E:6E:65:E1:31:7E:CB:2D:F2:80:B0:18:85:89:BD"
     ]
   }
 }]

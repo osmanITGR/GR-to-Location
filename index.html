@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GR Converter — Shared Locations</title>
+<title>GR to Location — Shared Locations</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -73,14 +73,14 @@
 <body>
 <div class="card">
   <div class="icon">📍</div>
-  <h1>GR Converter</h1>
+  <h1>GR to Location</h1>
   <p class="subtitle">Shared Locations</p>
 
   <div id="locList" class="loc-list"></div>
   <p id="status">Loading...</p>
 
   <a id="btnApp" class="btn btn-primary" style="display:none">
-    ⬆ Open in GR Converter App
+    ⬆ Open in GR to Location App
   </a>
 
   <a id="btnMaps" class="btn btn-secondary" style="display:none" target="_blank">
@@ -127,7 +127,7 @@ if (!raw) {
     });
 
     // Deep link back into app
-    const appLink = 'grconverter://locations?data=' + encodeURIComponent(JSON.stringify(locs));
+    const appLink = 'grtogps://locations?data=' + encodeURIComponent(JSON.stringify(locs));
     btnApp.href = appLink;
     btnApp.style.display = 'block';
 
