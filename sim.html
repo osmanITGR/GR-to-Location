@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GR to Location — Operation Sketch</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #141F0A;
+    color: #E8F5E9;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .card {
+    background: #263D17;
+    border: 2px solid #8BC34A;
+    border-radius: 16px;
+    padding: 24px 20px;
+    max-width: 520px;
+    width: 100%;
+  }
+  .icon { font-size: 44px; text-align: center; }
+  h1 { color: #8BC34A; font-size: 20px; text-align: center; margin: 6px 0 2px; }
+  .subtitle { color: #A5D6A7; font-size: 13px; text-align: center; margin-bottom: 18px; }
+  .btn {
+    display: block; width: 100%; padding: 13px; border-radius: 10px;
+    font-size: 15px; font-weight: bold; text-decoration: none;
+    margin-bottom: 10px; cursor: pointer; border: none; text-align: center;
+  }
+  .btn-primary { background: linear-gradient(135deg, #8BC34A, #6EA832); color: #141F0A; }
+  .btn-secondary { background: #1E3A0F; color: #8BC34A; border: 1px solid #4A7C2A; }
+  .sec-title { color: #8BC34A; font-size: 14px; font-weight: bold; margin: 16px 0 6px; }
+  .item {
+    background: #1A2E10; border-radius: 8px; padding: 9px 12px;
+    margin-bottom: 7px; border-left: 3px solid #8BC34A;
+  }
+  .item.enemy { border-left-color: #E53935; }
+  .item.frv   { border-left-color: #00E5FF; }
+  .item.wrv   { border-left-color: #FF4081; }
+  .name { font-weight: bold; font-size: 14px; }
+  .detail { font-size: 12px; color: #A5D6A7; margin-top: 2px; }
+  .maps { color: #8BC34A; font-size: 11px; }
+  .footer { color: #3D5C28; font-size: 11px; margin-top: 18px; text-align: center; }
+  #status { color: #A5D6A7; font-size: 13px; text-align: center; margin: 10px 0; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🗺</div>
+  <h1 id="title">Operation Sketch</h1>
+  <p class="subtitle">GR to Location — Minor Ops</p>
+
+  <p id="status">Loading…</p>
+
+  <a id="btnApp" class="btn btn-primary" style="display:none">⬆ Open in GR to Location App</a>
+  <a id="btnMaps" class="btn btn-secondary" style="display:none" target="_blank">🌍 View all points on Google Maps</a>
+
+  <div id="content"></div>
+
+  <a class="btn btn-secondary"
+     href="https://github.com/osmanITGR/GR-to-Location/releases/latest/download/GR-to-Location.apk">
+     ⬇ Download the App (APK)</a>
+
+  <p class="footer">Developed by OsmanIT</p>
+</div>
+
+<script>
+// UTM Zone 46N (Bangladesh) → 8-figure GR, matching the app.
+function gpsToGr8(lat, lon){
+  try{
+    var a=6378137.0, f=1/298.257223563, k0=0.9996, e2=f*(2-f);
+    var lon0=91*Math.PI/180, latR=lat*Math.PI/180, lonR=lon*Math.PI/180;
+    var N=a/Math.sqrt(1-e2*Math.sin(latR)*Math.sin(latR));
+    var T=Math.tan(latR)*Math.tan(latR);
+    var C=e2/(1-e2)*Math.cos(latR)*Math.cos(latR);
+    var A=Math.cos(latR)*(lonR-lon0);
+    var e4=e2*e2, e6=e4*e2;
+    var M=a*((1-e2/4-3*e4/64-5*e6/256)*latR
+      -(3*e2/8+3*e4/32+45*e6/1024)*Math.sin(2*latR)
+      +(15*e4/256+45*e6/1024)*Math.sin(4*latR)
+      -(35*e6/3072)*Math.sin(6*latR));
+    var east=k0*N*(A+(1-T+C)*A*A*A/6
+      +(5-18*T+T*T+72*C-58*e2/(1-e2))*Math.pow(A,5)/120)+500000;
+    var north=k0*(M+N*Math.tan(latR)*(A*A/2+(5-T+9*C+4*C*C)*Math.pow(A,4)/24
+      +(61-58*T+T*T+600*C-330*e2/(1-e2))*Math.pow(A,6)/720));
+    // Same digit selection + offsets the app uses (approximate GR).
+    var es=Math.round(east).toString(), ns=Math.round(north).toString();
+    var e12=parseInt(es.substr(1,2)), e3=parseInt(es.substr(3,1)), e10=parseInt(es.substr(4,1));
+    var n45=parseInt(ns.substr(2,2)), n6=parseInt(ns.substr(4,1)), n10=parseInt(ns.substr(5,1));
+    // easting offset
+    if(e3==8){e12=(e12+1)%100;e3=0;} else if(e3==9){e12=(e12+1)%100;e3=1;} else {e3+=2;}
+    // northing offset
+    if(n6==0){n45=(n45+99)%100;n6=7;} else if(n6==1){n45=(n45+99)%100;n6=8;}
+    else if(n6==2){n45=(n45+99)%100;n6=9;} else {n6-=3;}
+    var p2=function(x){return x<10?'0'+x:''+x;};
+    return 'GR '+p2(e12)+e3+e10+p2(n45)+n6+n10;
+  }catch(e){ return 'GR —'; }
+}
+
+var params = new URLSearchParams(window.location.search);
+var raw = params.get('d') || params.get('data');
+var status = document.getElementById('status');
+var content = document.getElementById('content');
+var btnApp = document.getElementById('btnApp');
+var btnMaps = document.getElementById('btnMaps');
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+if(!raw){ status.textContent='No sketch data found.'; }
+else{
+  var doc=null;
+  try{ doc=JSON.parse(raw); }catch(e){ doc=null; }
+  if(!doc){ status.textContent='Could not read the sketch.'; }
+  else{
+    var op = doc.op || 'Operation';
+    document.getElementById('title').textContent = op + ' — Sketch';
+    status.textContent = 'Shared operation sketch';
+
+    var allPts = [];
+    var html = '';
+
+    // Enemies
+    if(doc.en && doc.en.length){
+      html += '<div class="sec-title">🔻 Enemy Positions ('+doc.en.length+')</div>';
+      doc.en.forEach(function(e,i){
+        allPts.push([e.la,e.lo]);
+        html += item('enemy', (i+1)+'. Enemy', e.la, e.lo);
+      });
+    }
+    // RVs
+    if(doc.frv){ allPts.push([doc.frv.la,doc.frv.lo]);
+      html += '<div class="sec-title">📍 Rendezvous</div>' + item('frv','◆ Final RV', doc.frv.la, doc.frv.lo); }
+    if(doc.wrv){ allPts.push([doc.wrv.la,doc.wrv.lo]);
+      html += (doc.frv?'':'<div class="sec-title">📍 Rendezvous</div>') + item('wrv','◇ Withdrawal RV', doc.wrv.la, doc.wrv.lo); }
+    // Teams
+    if(doc.tm && doc.tm.length){
+      html += '<div class="sec-title">🧍 Teams / Sub-groups ('+doc.tm.length+')</div>';
+      doc.tm.forEach(function(t){
+        var placed=0; (t.f||[]).forEach(function(p){placed+=(p.c||1);});
+        html += '<div class="item" style="border-left-color:'+esc(t.c||'#8BC34A')+'">';
+        html += '<div class="name">'+esc(t.n)+'  —  '+placed+'/'+(t.s||placed)+' placed</div>';
+        (t.f||[]).forEach(function(p){
+          allPts.push([p.la,p.lo]);
+          html += '<div class="detail">• '+(p.c||1)+' men @ '+gpsToGr8(p.la,p.lo)
+                + '  <a class="maps" target="_blank" href="https://maps.google.com/?q='+p.la+','+p.lo+'">🌍</a></div>';
+        });
+        if(t.m && t.m.trim()){
+          html += '<div class="detail">Members: '+esc(t.m.replace(/\n/g,', '))+'</div>';
+        }
+        html += '</div>';
+      });
+    }
+    content.innerHTML = html;
+
+    // App deep link (opens the read-only viewer in the app)
+    var appLink = 'grtogps://sim?d=' + encodeURIComponent(raw);
+    btnApp.href = appLink; btnApp.style.display='block';
+
+    // Google Maps with all points
+    if(allPts.length){
+      var mapsUrl = allPts.length===1
+        ? 'https://maps.google.com/?q='+allPts[0][0]+','+allPts[0][1]
+        : 'https://maps.google.com/maps?q='+allPts.map(function(p){return p[0]+','+p[1];}).join('|');
+      btnMaps.href = mapsUrl; btnMaps.style.display='block';
+    }
+
+    // Auto-open the app on Android
+    if(/Android/i.test(navigator.userAgent)){
+      status.textContent += ' — opening app…';
+      window.location.href = appLink;
+      setTimeout(function(){ status.textContent='Shared operation sketch'; }, 1500);
+    }
+  }
+}
+
+function item(cls, name, la, lo){
+  return '<div class="item '+cls+'">'
+    + '<div class="name">'+esc(name)+'</div>'
+    + '<div class="detail">'+gpsToGr8(la,lo)+'  •  '+la.toFixed(5)+', '+lo.toFixed(5)+'</div>'
+    + '<a class="maps" target="_blank" href="https://maps.google.com/?q='+la+','+lo+'">🌍 Open on Google Maps</a>'
+    + '</div>';
+}
+</script>
+</body>
+</html>
