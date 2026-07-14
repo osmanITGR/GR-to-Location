@@ -111,6 +111,16 @@ var btnMaps = document.getElementById('btnMaps');
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+// Enemy element type code (from the app) → readable label. Custom names win for "other".
+var ENEMY_TYPES = {
+  rest_house:'Rest House', ammo_dump:'Ammo Dump', op_post:'OP Post',
+  patrol:'Patrol Party', rr_station:'RR Station', fuel:'Fuel Station', other:'Other'
+};
+function enemyLabel(e){
+  if(e.ty==='other' && e.nm && e.nm.trim()) return e.nm.trim();
+  return ENEMY_TYPES[e.ty] || 'Enemy';
+}
+
 if(!raw){ status.textContent='No sketch data found.'; }
 else{
   var doc=null;
@@ -129,7 +139,7 @@ else{
       html += '<div class="sec-title">🔻 Enemy Positions ('+doc.en.length+')</div>';
       doc.en.forEach(function(e,i){
         allPts.push([e.la,e.lo]);
-        html += item('enemy', (i+1)+'. Enemy', e.la, e.lo);
+        html += item('enemy', (i+1)+'. '+enemyLabel(e), e.la, e.lo);
       });
     }
     // RVs
@@ -149,7 +159,16 @@ else{
           html += '<div class="detail">• '+(p.c||1)+' men @ '+gpsToGr8(p.la,p.lo)
                 + '  <a class="maps" target="_blank" href="https://maps.google.com/?q='+p.la+','+p.lo+'">🌍</a></div>';
         });
-        if(t.m && t.m.trim()){
+        // Structured members with per-member task (ml), else legacy free-text roster (m).
+        if(t.ml && t.ml.length){
+          html += '<div class="detail">Members:</div>';
+          t.ml.forEach(function(mem){
+            if(!mem.n || !mem.n.trim()) return;
+            var line = '&nbsp;&nbsp;- '+esc(mem.n.trim());
+            if(mem.t && mem.t.trim()) line += ' — '+esc(mem.t.trim());
+            html += '<div class="detail">'+line+'</div>';
+          });
+        } else if(t.m && t.m.trim()){
           html += '<div class="detail">Members: '+esc(t.m.replace(/\n/g,', '))+'</div>';
         }
         html += '</div>';
