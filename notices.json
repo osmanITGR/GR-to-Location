@@ -1,11 +1,11 @@
 {
   "latestVersionCode": 24,
   "versionName": "1.0.10",
-  "apkUrl": "https://github.com/osmanITGR/GR-to-Location/releases/latest/download/GR-to-Location.apk",
+  "apkUrl": "https:\/\/github.com\/osmanITGR\/GR-to-Location\/releases\/latest\/download\/GR-to-Location.apk",
   "mandatory": false,
   "notice": {
-    "id": "",
-    "title": "",
-    "body": ""
+    "id": "2026-07-16-201927",
+    "title": "জরুরি আপডেট",
+    "body": "আসসালামুয়ালাইকুম, সর্বশেষ ভার্সন 1.0.10 এ গুগল ব্যাকআপ অপশন যুক্ত করা হয়েছে। তাই সবাই তাড়াতাড়ি আপডেট করে নিন।"
   }
 }
