@@ -3,84 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="google" content="notranslate">
+<!-- The update page now lives on the Worker, so its download button is same-origin
+     (see usage-counter/update-page.js). This old address forwards there. -->
+<meta http-equiv="refresh" content="0; url=https://gr-usage-counter.osmanitgr.workers.dev/update">
 <title>GR to Location আপডেট</title>
-<!-- Opened by old app versions (≤ 1.0.10), which can only update through the browser.
-     Why updates looked stuck: Chrome downloads the whole APK first and only then asks
-     "File might be harmful — download anyway?". Until that is answered the file stays hidden
-     (Download/.pending-…-GR-to-Location.apk), so it shows nowhere. People who left the
-     browser while it downloaded never saw the question. Reopening Chrome brings it back.
-     After it, the "File downloaded — Open" bar vanishes in seconds and the "Download
-     complete" notification is silent. This page says all of that at the moment it matters. -->
-<style>
-  :root { --bg:#141F0A; --card:#263D17; --line:#3D5C28; --text:#E8F5E9; --muted:#A5D6A7; --accent:#8BC34A; --warn:#FFD54F; }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--text);
-         font-family:"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif; line-height:1.6; }
-  main { max-width:560px; margin:0 auto; padding:24px 16px 48px; }
-  h1 { font-size:1.45rem; margin:0 0 4px; }
-  .sub { color:var(--muted); margin:0 0 20px; }
-  .btn { display:block; text-align:center; text-decoration:none; font-weight:700; border-radius:10px;
-         padding:16px 12px; background:var(--accent); color:#10200A; font-size:1.25rem; margin:0 0 8px; }
-  .btn:active { filter:brightness(.9); }
-  .size { text-align:center; color:var(--muted); font-size:.9rem; margin:0 0 20px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:0 0 16px; }
-  .card h2 { font-size:1.1rem; margin:0 0 8px; }
-  .next { border:2px solid var(--accent); }
-  .next h2 { color:var(--accent); }
-  .stuck h2 { color:var(--warn); }
-  ol, ul { margin:0; padding-left:1.4em; }
-  li { margin:6px 0; }
-  b { color:#fff; }
-  .note { color:var(--muted); font-size:.92rem; margin:10px 0 0; }
-</style>
 </head>
-<body>
-<main>
-  <h1>GR to Location — নতুন আপডেট</h1>
-  <p class="sub">এই আপডেটটি শুধু একবার ব্রাউজার দিয়ে নামাতে হবে। এরপর থেকে সব আপডেট অ্যাপের ভেতরেই ডাউনলোড ও ইনস্টল হবে।</p>
-
-  <!-- Always the newest main-app release (admin-app releases are never marked latest). -->
-  <a class="btn" id="download" href="https://github.com/osmanITGR/GR-to-Location/releases/latest/download/GR-to-Location.apk">⬇️ আপডেট ডাউনলোড করুন</a>
-  <p class="size">ফাইলের আকার প্রায় ৫ MB</p>
-
-  <section class="card next" id="next" hidden>
-    <h2>⏳ ডাউনলোড হচ্ছে — এই পেজেই থাকুন</h2>
-    <ol>
-      <li>অন্য অ্যাপে যাবেন না। পুরো ফাইল নামার পর <b>"File might be harmful"</b> (ফাইলটি ক্ষতিকর হতে পারে) প্রশ্ন আসবে → <b>Download anyway</b> চাপুন।</li>
-      <li>এরপর <b>Open</b> দেখাবে — কয়েক সেকেন্ডেই চলে যায়, সাথে সাথে চাপুন।</li>
-      <li><b>Open</b> চলে গেলে উপর থেকে নোটিফিকেশন বার নামিয়ে <b>GR-to-Location.apk</b>-এ চাপুন।</li>
-    </ol>
-  </section>
-
-  <section class="card">
-    <h2>যেভাবে আপডেট করবেন</h2>
-    <ol>
-      <li>উপরের সবুজ বাটনে চাপুন, আর ডাউনলোড শেষ না হওয়া পর্যন্ত এই পেজেই থাকুন।</li>
-      <li><b>"File might be harmful"</b> প্রশ্ন এলে <b>Download anyway</b> চাপুন।</li>
-      <li><b>Open</b> চাপুন (চলে গেলে নোটিফিকেশন থেকে <b>GR-to-Location.apk</b>-এ চাপুন)।</li>
-      <li><b>Install unknown apps</b> অনুমতি চাইলে <b>Settings</b> → চালু করে ফিরে আসুন। ইনস্টল স্ক্রিন নিজে না এলে নোটিফিকেশনে আবার চাপুন।</li>
-      <li><b>Update</b> চাপুন। Play Protect সতর্ক করলে <b>Install anyway</b> চাপুন।</li>
-    </ol>
-    <p class="note">আপনার সেভ করা সব ডেটা ঠিক থাকবে।</p>
-  </section>
-
-  <section class="card stuck">
-    <h2>ডাউনলোড আটকে আছে / ফাইল খুঁজে পাচ্ছেন না?</h2>
-    <ul>
-      <li><b>Chrome</b> (বা যে ব্রাউজারে নামাচ্ছিলেন) আবার খুলুন — <b>"File might be harmful"</b> প্রশ্নটা আবার আসবে, <b>Download anyway</b> চাপুন।</li>
-      <li>ফাইল নামা শেষ হলে: উপর থেকে নোটিফিকেশন নামিয়ে <b>GR-to-Location.apk</b>-এ চাপুন, অথবা <b>Files</b> / <b>My Files</b> অ্যাপ → <b>Download</b> ফোল্ডার → <b>GR-to-Location.apk</b>।</li>
-      <li>তবুও না হলে এই পেজে ফিরে আবার সবুজ বাটনে চাপুন, আর শেষ না হওয়া পর্যন্ত এই পেজেই থাকুন।</li>
-    </ul>
-  </section>
-</main>
-<script>
-  // Show what to do next the moment the download starts.
-  document.getElementById("download").addEventListener("click", function () {
-    var next = document.getElementById("next");
-    next.hidden = false;
-    setTimeout(function () { next.scrollIntoView({ behavior: "smooth", block: "start" }); }, 400);
-  });
-</script>
+<body style="margin:0;padding:24px 16px;background:#141F0A;color:#E8F5E9;font-family:system-ui,sans-serif">
+<p>আপডেট পেজ খুলছে… না খুললে <a style="color:#8BC34A" href="https://gr-usage-counter.osmanitgr.workers.dev/update">এখানে চাপুন</a>।</p>
+<script>location.replace("https://gr-usage-counter.osmanitgr.workers.dev/update");</script>
 </body>
 </html>
