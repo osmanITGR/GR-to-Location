@@ -1,6 +1,6 @@
 {
   "latestVersionCode": 25,
-  "versionName": "1.0.11\n\n⚠️ শুধু এবার: 'আপডেট করুন' চাপলে একটি পেজ খুলবে।\nসেখানে সবুজ বাটনে চাপুন, তারপর পেজে লেখা ধাপগুলো মেনে চলুন।\nসব ডেটা ঠিক থাকবে।\n",
+  "versionName": "1.0.11\n\n⚠️ শুধু এবার: 'আপডেট করুন' চাপলে একটি পেজ খুলবে।\nসবুজ বাটনে চাপুন, আর ডাউনলোড শেষ না হওয়া পর্যন্ত সেখানেই থাকুন।\n\"File might be harmful\" এলে 'Download anyway' চাপুন।\nসব ডেটা ঠিক থাকবে।\n",
   "apkUrl": "https://gr-usage-counter.osmanitgr.workers.dev/update",
   "mandatory": true,
   "notice": {
