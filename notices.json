@@ -1,7 +1,7 @@
 {
   "latestVersionCode": 25,
-  "versionName": "1.0.11\n\n⚠️ শুধু এবার ব্রাউজার দিয়ে নামাতে হবে:\n১) 'আপডেট করুন' চাপুন\n২) \"ক্ষতিকর হতে পারে\" এলে 'Download anyway' চাপুন\n৩) ডাউনলোড শেষে 'Open' চাপুন\n৪) 'Install unknown apps' চালু করে ফিরে আসুন\n৫) 'Update' চাপুন — সব ডেটা ঠিক থাকবে\n",
-  "apkUrl": "https://github.com/osmanITGR/GR-to-Location/releases/download/v1.0.11/GR-to-Location.apk",
+  "versionName": "1.0.11\n\n⚠️ শুধু এবার: 'আপডেট করুন' চাপলে একটি পেজ খুলবে।\nসেখানে সবুজ বাটনে চাপুন, তারপর পেজে লেখা ধাপগুলো মেনে চলুন।\nসব ডেটা ঠিক থাকবে।\n",
+  "apkUrl": "https://gr-usage-counter.osmanitgr.workers.dev/update",
   "mandatory": true,
   "notice": {
     "id": "2026-07-23-182822",
